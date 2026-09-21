@@ -70,7 +70,7 @@
 
           <article class="tickets-card">
             <div class="card-title-row"><h2>Tickets de casa</h2><span>🎟</span></div>
-            <p class="card-subtitle">Ocho tickets. Siempre entre nosotros.</p>
+            <p class="card-subtitle">Los tickets disponibles de cada persona.</p>
             <div id="tickets-list" class="tickets-list">
               <div class="ticket-member"><div class="person-info"><div class="person-avatar person-mama">Ma</div><div><strong>Mamá</strong><small>Disponible para canjear</small></div></div><div class="ticket-number"><span id="tickets-mama">2</span>🎟</div></div>
               <div class="ticket-member"><div class="person-info"><div class="person-avatar person-papa">Pa</div><div><strong>Papá</strong><small>Disponible para canjear</small></div></div><div class="ticket-number"><span id="tickets-papa">2</span>🎟</div></div>
@@ -80,6 +80,19 @@
             <div class="tickets-total"><span>En circulación</span><strong><span id="tickets-total">8</span> tickets</strong></div>
           </article>
         </div>
+
+        <article id="ticket-admin" class="tickets-card hidden" aria-labelledby="ticket-admin-title">
+          <h2 id="ticket-admin-title">Administrar tickets</h2>
+          <p class="card-subtitle">Fijá el saldo de una persona. El ajuste quedará registrado.</p>
+          <form id="ticket-admin-form">
+            <fieldset id="ticket-admin-fields" class="ticket-admin-fields">
+              <label>Persona<select id="ticket-admin-member" required></select></label>
+              <label>Nuevo saldo<input id="ticket-admin-balance" type="number" min="0" max="2147483647" step="1" inputmode="numeric" required /></label>
+              <button type="submit" class="primary-success-button">Guardar saldo</button>
+            </fieldset>
+            <p id="ticket-admin-message" role="status" aria-live="polite"></p>
+          </form>
+        </article>
 
         <div class="quick-actions">
           <button id="publish-turn-btn" class="action-card"><div><span class="action-icon">🎟</span><strong>Publicar turno por ticket</strong><small>Otra persona lava, tú pagas 1 ticket.</small></div><span>→</span></button>
@@ -128,7 +141,7 @@
           <article class="rules-card">
             <p class="eyebrow">ACTIVAS</p><h2>Pocas reglas. Bien claras.</h2>
             <div class="rules-list">
-              <div class="rule"><strong>2 tickets al empezar.</strong><p>Cada persona tiene dos. El total siempre es ocho y no hay deuda de tickets.</p></div>
+              <div class="rule"><strong>2 tickets al empezar.</strong><p>Los tickets se transfieren al completar una cobertura. Santi, como administrador, puede ajustar los saldos; no hay saldos negativos.</p></div>
               <div class="rule"><strong>Primero aceptar, después cobrar.</strong><p>El ticket queda reservado y se transfiere al confirmar el lavado. Publicar por sí solo no cambia el turno.</p></div>
               <div class="rule"><strong>La ausencia intercambia dos noches.</strong><p>Mamá → Papá → Mariano → Santi se convierte en Papá → Mamá → Mariano → Santi. El turno recuperado es obligatorio.</p></div>
               <div class="rule"><strong>Una excepción no borra otra.</strong><p>No se encadenan ausencias ni se modifica una cobertura ya aceptada. Los turnos vencidos siguen sin confirmar.</p></div>

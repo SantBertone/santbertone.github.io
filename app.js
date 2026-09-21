@@ -23,6 +23,8 @@ const MEMBER_META = {
 
 let currentMember = null;
 let currentUser = null;
+let ticketAdmin = false;
+let ticketAdminSaving = false;
 let familyMembers = [];
 let memberById = {};
 let turns = [];
@@ -80,6 +82,8 @@ function setView(name) {
 }
 
 function showLogin(message = "") {
+  ticketAdmin = false;
+  el("ticket-admin").classList.add("hidden");
   el("app").classList.add("hidden");
   el("login-screen").classList.remove("hidden");
   el("login-error").textContent = message;
@@ -175,6 +179,7 @@ async function refreshData() {
   await loadTurns();
   renderIdentity();
   renderTickets();
+  renderTicketAdmin();
   renderToday();
   renderCalendar(currentCalendarDate);
   renderOffers();
@@ -198,6 +203,82 @@ function renderTickets() {
   }
 
   el("tickets-total").textContent = total;
+}
+
+// Fail closed: only the protected server RPC can enable this control.
+async function loadTicketAdmin() {
+  ticketAdmin = false;
+  try {
+    const { data, error } = await client.rpc("is_ticket_admin");
+    ticketAdmin = !error && data === true;
+  } catch (_) {
+    ticketAdmin = false;
+  }
+  renderTicketAdmin();
+}
+
+function renderTicketAdmin() {
+  el("ticket-admin").classList.toggle("hidden", !ticketAdmin);
+  if (!ticketAdmin) return;
+  const select = el("ticket-admin-member");
+  const previous = select.value;
+  select.replaceChildren();
+  for (const member of familyMembers) {
+    const option = document.createElement("option");
+    option.value = String(member.id);
+    option.textContent = `${member.name} · ${member.tickets ?? 0} tickets`;
+    select.appendChild(option);
+  }
+  if ([...select.options].some(option => option.value === previous)) select.value = previous;
+  syncTicketAdminBalance();
+}
+
+function syncTicketAdminBalance() {
+  const member = familyMembers.find(m => String(m.id) === el("ticket-admin-member").value);
+  el("ticket-admin-balance").value = member ? member.tickets ?? 0 : "";
+}
+
+async function saveTicketBalance(event) {
+  event.preventDefault();
+  if (!ticketAdmin || ticketAdminSaving) return;
+  const message = el("ticket-admin-message");
+  const member = familyMembers.find(m => String(m.id) === el("ticket-admin-member").value);
+  const raw = el("ticket-admin-balance").value.trim();
+  const balance = Number(raw);
+  if (!member || !/^\d+$/.test(raw) || !Number.isSafeInteger(balance) || balance > 2147483647) {
+    message.textContent = "Ingresá una cantidad entera entre 0 y 2147483647.";
+    return;
+  }
+  if (balance === Number(member.tickets)) {
+    message.textContent = "El saldo ya tiene esa cantidad.";
+    return;
+  }
+  if (!confirm(`¿Fijar el saldo de ${member.name} en ${balance} tickets? Ahora tiene ${member.tickets}.`)) return;
+  ticketAdminSaving = true;
+  el("ticket-admin-fields").disabled = true;
+  message.textContent = "Guardando…";
+  let saved = false;
+  try {
+    const { error } = await client.rpc("admin_set_ticket_balance", {
+      p_member_id: member.id,
+      p_balance: balance,
+      p_expected_balance: Number(member.tickets)
+    });
+    if (error) throw error;
+    saved = true;
+    await refreshData();
+    message.textContent = `Saldo de ${member.name} actualizado a ${balance} tickets.`;
+  } catch (error) {
+    message.textContent = saved
+      ? "El saldo se guardó, pero no se pudo actualizar la pantalla. Recargá la página."
+      : error?.code === "P0001"
+        ? "El saldo cambió mientras editabas. Recargá la página y volvé a intentarlo."
+        : "No se pudo guardar. Recargá para comprobar el saldo y los permisos antes de volver a intentar.";
+    if (error?.code === "42501") await loadTicketAdmin();
+  } finally {
+    ticketAdminSaving = false;
+    el("ticket-admin-fields").disabled = false;
+  }
 }
 
 function humanStatus(status) {
@@ -418,19 +499,27 @@ async function renderHistory() {
     absence_declared: "declaró ausencia"
   };
 
-  host.innerHTML = entries.map(entry => {
+  host.replaceChildren();
+  for (const entry of entries) {
     const actor = memberName(entry.actor_member_id);
     const label = labels[entry.action] || entry.action;
-    return `
-      <div class="history-entry">
-        <strong>${actor} ${label}</strong>
-        <time>${new Intl.DateTimeFormat("es-AR",{
-          dateStyle:"short",
-          timeStyle:"short"
-        }).format(new Date(entry.created_at))}</time>
-      </div>
-    `;
-  }).join("");
+    const row = document.createElement("div");
+    row.className = "history-entry";
+    const summary = document.createElement("strong");
+    if (entry.action === "ticket_balance_adjusted") {
+      const details = entry.details || {};
+      summary.textContent = `${actor} ajustó los tickets de ${memberName(details.member_id)}: ${details.previous_balance} → ${details.new_balance}.`;
+    } else {
+      summary.textContent = `${actor} ${label}`;
+    }
+    const time = document.createElement("time");
+    time.dateTime = entry.created_at;
+    time.textContent = new Intl.DateTimeFormat("es-AR", {
+      dateStyle: "short", timeStyle: "short"
+    }).format(new Date(entry.created_at));
+    row.append(summary, time);
+    host.appendChild(row);
+  }
 }
 
 async function callRpc(name, params) {
@@ -503,6 +592,11 @@ function wireTheme() {
 }
 
 async function boot() {
+  el("ticket-admin-form").addEventListener("submit", saveTicketBalance);
+  el("ticket-admin-member").addEventListener("change", () => {
+    syncTicketAdminBalance();
+    el("ticket-admin-message").textContent = "";
+  });
   wireNavigation();
   wireCalendarControls();
   wireTheme();
@@ -530,6 +624,7 @@ async function boot() {
 
   try {
     await refreshData();
+    await loadTicketAdmin();
     showApp();
   } catch (error) {
     console.error(error);

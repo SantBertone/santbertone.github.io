@@ -25,6 +25,13 @@
   --shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
 }
 
+#ticket-admin { margin-top: 20px; }
+.ticket-admin-fields { border: 0; padding: 0; margin: 18px 0 0; display: flex; flex-wrap: wrap; align-items: end; gap: 14px; }
+.ticket-admin-fields label { display: grid; gap: 8px; flex: 1 1 180px; }
+.ticket-admin-fields select, .ticket-admin-fields input { width: 100%; min-width: 0; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: inherit; }
+.ticket-admin-fields :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+#ticket-admin-message { color: var(--muted); margin-top: 12px; }
+
 /* =========================================================
    RESET
 ========================================================= */
