@@ -25,6 +25,8 @@ let currentMember = null;
 let currentUser = null;
 let ticketAdmin = false;
 let ticketAdminSaving = false;
+let pastTurnSaving = false;
+let daySuspensionSaving = false;
 let familyMembers = [];
 let memberById = {};
 let turns = [];
@@ -156,21 +158,20 @@ async function loadFamilyMembers() {
 }
 
 async function loadTurns() {
-  const start = new Date();
-  start.setMonth(start.getMonth() - 2);
   const end = new Date();
   end.setMonth(end.getMonth() + 14);
-
-  const { data, error } = await client
-    .from("turns")
-    .select("*")
-    .gte("date", localDateKey(start))
-    .lte("date", localDateKey(end))
-    .order("date", { ascending: true });
-
-  if (error) throw error;
-
-  turns = data || [];
+  // Include older pending turns too; paginate instead of silently truncating them.
+  const loaded = [];
+  const pageSize = 500;
+  for (let offset = 0; ; offset += pageSize) {
+    const { data, error } = await client.from("turns").select("*")
+      .lte("date", localDateKey(end)).order("date", { ascending: true })
+      .range(offset, offset + pageSize - 1);
+    if (error) throw error;
+    loaded.push(...(data || []));
+    if (!data || data.length < pageSize) break;
+  }
+  turns = loaded;
   todayTurn = turns.find(t => t.date === localDateKey()) || null;
 }
 
@@ -215,6 +216,8 @@ async function loadTicketAdmin() {
     ticketAdmin = false;
   }
   renderTicketAdmin();
+  renderCalendar(currentCalendarDate);
+  renderToday();
 }
 
 function renderTicketAdmin() {
@@ -287,7 +290,8 @@ function humanStatus(status) {
     offered: "Publicado",
     covered: "Cubierto",
     completed: "Completado",
-    absent: "Ausencia"
+    absent: "Ausencia",
+    suspended: "Suspendido"
   }[status] || status;
 }
 
@@ -302,6 +306,15 @@ function effectiveTurnMember(turn) {
 function renderToday() {
   const today = new Date();
   el("today-date").textContent = formatLongDate(today);
+  const dayButton = el("suspend-day-btn");
+  dayButton.classList.toggle("hidden", !canSuspendDay(todayTurn));
+  dayButton.disabled = daySuspensionSaving || pastTurnSaving;
+  const suspended = todayTurn?.status === "suspended";
+  el("suspend-day-icon").textContent = suspended ? "▶" : "Ⅱ";
+  el("suspend-day-title").textContent = suspended ? "Reactivar día" : "Suspender día";
+  el("suspend-day-description").textContent = suspended
+    ? "Volver a dejar este turno pendiente."
+    : "Hoy no hace falta lavar. Los demás turnos siguen igual.";
 
   if (!todayTurn) {
     el("today-member-name").textContent = "Sin turno.";
@@ -316,14 +329,18 @@ function renderToday() {
   const displayName = effectiveTurnMember(todayTurn);
   const meta = MEMBER_META[displayName] || { short: "—" };
 
-  el("today-member-name").textContent = `${displayName}.`;
-  el("today-member-avatar").textContent = meta.short;
+  el("today-member-name").textContent = suspended ? "Hoy no se lava." : `${displayName}.`;
+  el("today-member-avatar").textContent = suspended ? "Ⅱ" : meta.short;
   el("turn-status").textContent = humanStatus(todayTurn.status);
+  el("turn-type-label").textContent = suspended ? "Sin lavado" : "Turno normal";
+  el("turn-description").textContent = suspended
+    ? "Hoy descansamos de los platos. El calendario sigue mañana."
+    : "Después de cenar, la cocina queda en tus manos.";
 
-  const isAssigned = currentMember.id === todayTurn.assigned_member_id;
-  const isCover = currentMember.id === todayTurn.covered_by_member_id;
+  const isAssigned = currentMember?.id === todayTurn.assigned_member_id;
+  const isCover = currentMember?.id === todayTurn.covered_by_member_id;
   const canComplete =
-    todayTurn.status !== "completed" &&
+    todayTurn.status !== "completed" && todayTurn.status !== "suspended" &&
     ((todayTurn.covered_by_member_id && isCover) ||
       (!todayTurn.covered_by_member_id && isAssigned));
 
@@ -333,7 +350,10 @@ function renderToday() {
 
   const banner = el("status-banner");
 
-  if (todayTurn.status === "offered") {
+  if (suspended) {
+    banner.textContent = "Día suspendido: no hace falta lavar. Los próximos turnos siguen igual.";
+    banner.classList.remove("hidden");
+  } else if (todayTurn.status === "offered") {
     banner.textContent =
       `${assignedName} publicó este turno por ${todayTurn.ticket_price} ticket.`;
     banner.classList.remove("hidden");
@@ -377,9 +397,91 @@ function renderWeek() {
   }
 }
 
+function householdDateKey() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Argentina/Buenos_Aires", year: "numeric", month: "2-digit", day: "2-digit"
+  }).formatToParts(new Date());
+  const get = type => parts.find(part => part.type === type).value;
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
+function canCompletePastTurn(turn) {
+  return ticketAdmin && turn && turn.status === "pending"
+    && !turn.covered_by_member_id && turn.date < householdDateKey();
+}
+
+function canSuspendDay(turn) {
+  return ticketAdmin && turn && ["pending", "suspended"].includes(turn.status)
+    && !turn.covered_by_member_id && !turn.completed_by_member_id && !turn.completed_at;
+}
+
+async function setDaySuspended(turnId, messageId = "calendar-admin-message") {
+  const turn = turns.find(item => item.id === turnId);
+  if (daySuspensionSaving || pastTurnSaving || !canSuspendDay(turn)) return;
+  const suspend = turn.status === "pending";
+  const date = formatLongDate(parseDateKey(turn.date));
+  const question = suspend
+    ? `¿Suspender el ${date}? No habrá lavado ese día. El resto del calendario y los tickets siguen igual.`
+    : `¿Reactivar el ${date}? El turno de ${memberName(turn.assigned_member_id)} volverá a quedar pendiente.`;
+  if (!confirm(question)) return;
+  daySuspensionSaving = true;
+  renderCalendar(); renderToday();
+  const message = el(messageId);
+  message.textContent = "Guardando…";
+  let saved = false;
+  try {
+    const { error } = await client.rpc("admin_set_day_suspended", {
+      p_turn_id: turnId, p_suspended: suspend
+    });
+    if (error) throw error;
+    saved = true;
+    await refreshData();
+    message.textContent = suspend ? "Día suspendido. Los demás turnos siguen igual." : "Día reactivado.";
+  } catch (error) {
+    message.textContent = saved
+      ? "El cambio se guardó. Recargá la página para actualizar el calendario."
+      : error?.code === "P0001"
+        ? "El turno cambió o no se puede suspender. Recargá antes de volver a intentar."
+        : "No se pudo guardar. Comprobá que instalaste el SQL de suspensión y recargá.";
+    if (error?.code === "42501") await loadTicketAdmin();
+  } finally {
+    daySuspensionSaving = false;
+    renderCalendar(); renderToday();
+  }
+}
+
+async function completePastTurn(turnId) {
+  const turn = turns.find(item => item.id === turnId);
+  if (pastTurnSaving || daySuspensionSaving || !canCompletePastTurn(turn)) return;
+  if (!confirm(`¿Marcar como completado el turno de ${memberName(turn.assigned_member_id)} del ${formatLongDate(parseDateKey(turn.date))}? Quedará registrado que Santi lo confirmó después.`)) return;
+  pastTurnSaving = true;
+  renderCalendar();
+  const message = el("calendar-admin-message");
+  message.textContent = "Guardando…";
+  let saved = false;
+  try {
+    const { error } = await client.rpc("admin_complete_past_turn", { p_turn_id: turnId });
+    if (error) throw error;
+    saved = true;
+    await refreshData();
+    message.textContent = "Turno completado y registrado en el historial.";
+  } catch (error) {
+    message.textContent = saved
+      ? "El turno se guardó. Recargá la página para actualizar el calendario."
+      : error?.code === "P0001"
+        ? "Ese turno ya cambió o no es un pendiente pasado. Recargá el calendario."
+        : "No se pudo guardar. Comprobá que instalaste el SQL del calendario y recargá la página.";
+    if (error?.code === "42501") await loadTicketAdmin();
+  } finally {
+    pastTurnSaving = false;
+    renderCalendar();
+  }
+}
+
 function renderCalendar(date = currentCalendarDate) {
   currentCalendarDate = new Date(date.getFullYear(), date.getMonth(), 1);
   el("calendar-month-title").textContent = formatMonth(currentCalendarDate);
+  el("calendar-admin-hint").classList.toggle("hidden", !ticketAdmin);
 
   const grid = el("calendar-grid");
   grid.innerHTML = "";
@@ -416,6 +518,31 @@ function renderCalendar(date = currentCalendarDate) {
       </div>
       <div class="turn-label">${turn ? humanStatus(turn.status) : "Sin datos"}</div>
     `;
+    if (canCompletePastTurn(turn)) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "calendar-complete-button";
+      button.textContent = "✓";
+      const label = `Completar turno de ${name} del ${formatLongDate(d)}`;
+      button.setAttribute("aria-label", label);
+      button.title = label;
+      button.disabled = pastTurnSaving || daySuspensionSaving;
+      button.addEventListener("click", () => completePastTurn(turn.id));
+      cell.appendChild(button);
+    }
+    if (canSuspendDay(turn)) {
+      const button = document.createElement("button");
+      const suspended = turn.status === "suspended";
+      button.type = "button";
+      button.className = "calendar-suspend-button";
+      button.textContent = suspended ? "▶" : "Ⅱ";
+      const label = `${suspended ? "Reactivar" : "Suspender"} el día ${formatLongDate(d)}`;
+      button.setAttribute("aria-label", label);
+      button.title = label;
+      button.disabled = pastTurnSaving || daySuspensionSaving;
+      button.addEventListener("click", () => setDaySuspended(turn.id));
+      cell.appendChild(button);
+    }
     grid.appendChild(cell);
   }
 }
@@ -509,6 +636,12 @@ async function renderHistory() {
     if (entry.action === "ticket_balance_adjusted") {
       const details = entry.details || {};
       summary.textContent = `${actor} ajustó los tickets de ${memberName(details.member_id)}: ${details.previous_balance} → ${details.new_balance}.`;
+    } else if (entry.action === "past_turn_completed_by_admin") {
+      const details = entry.details || {};
+      summary.textContent = `${actor} marcó como completado el turno de ${memberName(details.assigned_member_id)} del ${details.turn_date} (registro posterior).`;
+    } else if (entry.action === "day_suspended" || entry.action === "day_reactivated") {
+      const details = entry.details || {};
+      summary.textContent = `${actor} ${entry.action === "day_suspended" ? "suspendió" : "reactivó"} el día ${details.turn_date}. El resto del calendario sigue igual.`;
     } else {
       summary.textContent = `${actor} ${label}`;
     }
@@ -592,6 +725,9 @@ function wireTheme() {
 }
 
 async function boot() {
+  el("suspend-day-btn").addEventListener("click", () => {
+    if (todayTurn) setDaySuspended(todayTurn.id, "day-admin-message");
+  });
   el("ticket-admin-form").addEventListener("submit", saveTicketBalance);
   el("ticket-admin-member").addEventListener("change", () => {
     syncTicketAdminBalance();

@@ -31,6 +31,14 @@
 .ticket-admin-fields select, .ticket-admin-fields input { width: 100%; min-width: 0; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: inherit; }
 .ticket-admin-fields :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 #ticket-admin-message { color: var(--muted); margin-top: 12px; }
+.calendar-complete-button { display: block; margin-top: 6px; padding: 3px 5px; max-width: 100%; min-height: 30px; border: 1px solid var(--success); border-radius: 6px; background: var(--success-dark); color: #fff; font-weight: bold; }
+.calendar-complete-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.calendar-complete-button:disabled { opacity: .5; cursor: wait; }
+#calendar-admin-message { color: var(--muted); margin: 10px 0; }
+.calendar-suspend-button { display: block; margin-top: 6px; padding: 3px 5px; max-width: 100%; min-height: 30px; border: 1px solid var(--muted); border-radius: 6px; background: var(--surface-2); color: var(--text); font-weight: bold; }
+.calendar-suspend-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.calendar-suspend-button:disabled { opacity: .5; cursor: wait; }
+#day-admin-message { color: var(--muted); margin: 10px 0; }
 
 /* =========================================================
    RESET
@@ -1053,7 +1061,7 @@ body.light {
 .calendar-grid {
   display: grid;
 
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 
   gap: 4px;
 }
@@ -1069,6 +1077,8 @@ body.light {
 }
 
 .calendar-cell {
+  min-width: 0;
+  overflow-wrap: anywhere;
   min-height: 100px;
 
   border: 1px solid var(--border);

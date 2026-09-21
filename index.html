@@ -63,9 +63,9 @@
         <div class="today-grid">
           <article class="turn-card">
             <div class="turn-card-top"><span class="eyebrow light">☾ ESTA NOCHE</span><span class="status-pill" id="turn-status">Pendiente</span></div>
-            <div class="turn-card-content"><p>¿Quién lava hoy?</p><h2 id="today-member-name">Mamá.</h2><span class="turn-type">Turno normal</span></div>
+            <div class="turn-card-content"><p>¿Quién lava hoy?</p><h2 id="today-member-name">Mamá.</h2><span id="turn-type-label" class="turn-type">Turno normal</span></div>
             <div class="turn-avatar" id="today-member-avatar">Ma</div>
-            <div class="turn-card-bottom"><p>Después de cenar, la cocina queda en tus manos.</p><button id="washed-btn" class="primary-success-button">✓ Platos Lavados</button></div>
+            <div class="turn-card-bottom"><p id="turn-description">Después de cenar, la cocina queda en tus manos.</p><button id="washed-btn" class="primary-success-button">✓ Platos Lavados</button></div>
           </article>
 
           <article class="tickets-card">
@@ -97,7 +97,9 @@
         <div class="quick-actions">
           <button id="publish-turn-btn" class="action-card"><div><span class="action-icon">🎟</span><strong>Publicar turno por ticket</strong><small>Otra persona lava, tú pagas 1 ticket.</small></div><span>→</span></button>
           <button id="absence-btn" class="action-card"><div><span class="action-icon">↕</span><strong>Declarar ausencia</strong><small>El siguiente lava hoy; tú recuperas mañana.</small></div><span>→</span></button>
+          <button id="suspend-day-btn" class="action-card hidden"><div><span id="suspend-day-icon" class="action-icon">Ⅱ</span><strong id="suspend-day-title">Suspender día</strong><small id="suspend-day-description">Hoy no hace falta lavar. Los demás turnos siguen igual.</small></div><span>→</span></button>
         </div>
+        <p id="day-admin-message" role="status" aria-live="polite"></p>
 
 
         <article class="offers-card">
@@ -122,6 +124,8 @@
         <div class="page-heading"><div><p class="eyebrow">EL REPARTO DE LA NOCHE</p><h1>Las próximas noches.</h1></div><div class="page-date">15 de septiembre de 2026</div></div>
         <article class="calendar-card">
           <div class="calendar-header"><h2 id="calendar-month-title">Septiembre de 2026</h2><div class="calendar-controls"><button id="calendar-prev">‹</button><button id="calendar-today">Hoy</button><button id="calendar-next">›</button></div></div>
+          <p id="calendar-admin-hint" class="card-subtitle hidden">Santi: ✓ completa pendientes pasados · Ⅱ suspende un día · ▶ lo reactiva. Los siguientes turnos no se desplazan. Todo queda en el historial.</p>
+          <p id="calendar-admin-message" role="status" aria-live="polite"></p>
           <div class="calendar-weekdays"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
           <div id="calendar-grid" class="calendar-grid"></div>
         </article>
