@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plato · Turnos en casa</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <section id="login-screen" class="login-screen hidden">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="logo-box">p.</span><span class="logo-text">plato</span>
+      </div>
+      <p class="login-kicker">CASA DE CUATRO</p>
+      <h1>Todo en su turno.</h1>
+      <p class="login-description">Turnos, tickets y acuerdos de casa en un solo lugar.</p>
+      <button id="google-login-btn" class="google-button"><span class="google-icon">G</span>Continuar con Google</button>
+      <p id="login-error" class="login-error"></p>
+    </div>
+  </section>
+
+  <div id="app" class="app-shell hidden">
+    <aside class="sidebar">
+      <div>
+        <div class="brand"><span class="logo-box">p.</span><span class="logo-text">plato</span></div>
+        <div class="sidebar-section-title"><span>♧</span><span>CASA DE CUATRO</span></div>
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-view="today"><span class="nav-icon">⌘</span><span>Hoy</span><span class="nav-badge">4</span></button>
+          <button class="nav-item" data-view="calendar"><span class="nav-icon">▦</span><span>Calendario</span></button>
+          <button class="nav-item" data-view="history"><span class="nav-icon">◴</span><span>Historial</span></button>
+          <button class="nav-item" data-view="agreements"><span class="nav-icon">↕</span><span>Acuerdos</span></button>
+        </nav>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="sidebar-moon">◔</div>
+        <h3>Una noche cada uno.</h3>
+        <p>La rueda sigue. Los platos también.</p>
+        <div class="rotation"><strong>Mamá → Mariano</strong><strong>Santi → Papá</strong></div>
+        <div class="sidebar-footer"><span>Nuestra familia</span><small>Un acceso por persona</small></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Nuestra casa</span><span>/</span><strong id="breadcrumb-current">Hoy</strong></div>
+        <div class="topbar-actions">
+          <button id="theme-toggle" class="secondary-button">☼ Modo claro</button>
+          <div class="account-summary"><strong id="top-user-name">Cuenta por vincular</strong></div>
+          <button id="logout-btn" class="logout-button">Salir</button>
+        </div>
+      </header>
+
+      <section id="view-today" class="view active-view">
+        <div class="page-heading">
+          <div><p class="eyebrow">EL REPARTO DE LA NOCHE</p><h1>Todo en su turno.</h1></div>
+          <div class="page-date" id="today-date">15 de septiembre de 2026</div>
+        </div>
+        <div id="status-banner" class="status-banner hidden"></div>
+
+        <div class="today-grid">
+          <article class="turn-card">
+            <div class="turn-card-top"><span class="eyebrow light">☾ ESTA NOCHE</span><span class="status-pill" id="turn-status">Pendiente</span></div>
+            <div class="turn-card-content"><p>¿Quién lava hoy?</p><h2 id="today-member-name">Mamá.</h2><span class="turn-type">Turno normal</span></div>
+            <div class="turn-avatar" id="today-member-avatar">Ma</div>
+            <div class="turn-card-bottom"><p>Después de cenar, la cocina queda en tus manos.</p><button id="washed-btn" class="primary-success-button">✓ Platos Lavados</button></div>
+          </article>
+
+          <article class="tickets-card">
+            <div class="card-title-row"><h2>Tickets de casa</h2><span>🎟</span></div>
+            <p class="card-subtitle">Ocho tickets. Siempre entre nosotros.</p>
+            <div id="tickets-list" class="tickets-list">
+              <div class="ticket-member"><div class="person-info"><div class="person-avatar person-mama">Ma</div><div><strong>Mamá</strong><small>Disponible para canjear</small></div></div><div class="ticket-number"><span id="tickets-mama">2</span>🎟</div></div>
+              <div class="ticket-member"><div class="person-info"><div class="person-avatar person-papa">Pa</div><div><strong>Papá</strong><small>Disponible para canjear</small></div></div><div class="ticket-number"><span id="tickets-papa">2</span>🎟</div></div>
+              <div class="ticket-member"><div class="person-info"><div class="person-avatar person-mariano">Ma</div><div><strong>Mariano</strong><small>Disponible para canjear</small></div></div><div class="ticket-number"><span id="tickets-mariano">2</span>🎟</div></div>
+              <div class="ticket-member"><div class="person-info"><div class="person-avatar person-santi">Sa</div><div><strong>Santi</strong><small>Disponible para canjear</small></div></div><div class="ticket-number"><span id="tickets-santi">2</span>🎟</div></div>
+            </div>
+            <div class="tickets-total"><span>En circulación</span><strong><span id="tickets-total">8</span> tickets</strong></div>
+          </article>
+        </div>
+
+        <div class="quick-actions">
+          <button id="publish-turn-btn" class="action-card"><div><span class="action-icon">🎟</span><strong>Publicar turno por ticket</strong><small>Otra persona lava, tú pagas 1 ticket.</small></div><span>→</span></button>
+          <button id="absence-btn" class="action-card"><div><span class="action-icon">↕</span><strong>Declarar ausencia</strong><small>El siguiente lava hoy; tú recuperas mañana.</small></div><span>→</span></button>
+        </div>
+
+
+        <article class="offers-card">
+          <div class="card-title-row">
+            <div>
+              <h2>Turnos disponibles</h2>
+              <p class="card-subtitle">Si alguien publicó su noche, podés tomarla por el ticket indicado.</p>
+            </div>
+          </div>
+          <div id="offers-list" class="offers-list">
+            <div class="empty-offers">No hay turnos publicados por ahora.</div>
+          </div>
+        </article>
+
+        <article class="week-card">
+          <div class="card-title-row"><div><h2>Esta semana</h2><p class="card-subtitle">Cada noche tiene su lugar.</p></div><button class="text-button" data-view-link="calendar">Ver calendario →</button></div>
+          <div id="week-strip" class="week-strip"></div>
+        </article>
+      </section>
+
+      <section id="view-calendar" class="view">
+        <div class="page-heading"><div><p class="eyebrow">EL REPARTO DE LA NOCHE</p><h1>Las próximas noches.</h1></div><div class="page-date">15 de septiembre de 2026</div></div>
+        <article class="calendar-card">
+          <div class="calendar-header"><h2 id="calendar-month-title">Septiembre de 2026</h2><div class="calendar-controls"><button id="calendar-prev">‹</button><button id="calendar-today">Hoy</button><button id="calendar-next">›</button></div></div>
+          <div class="calendar-weekdays"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
+          <div id="calendar-grid" class="calendar-grid"></div>
+        </article>
+      </section>
+
+      <section id="view-history" class="view">
+        <div class="page-heading"><div><p class="eyebrow">EL REPARTO DE LA NOCHE</p><h1>Lo que ya pasó.</h1></div><div class="page-date">15 de septiembre de 2026</div></div>
+        <article class="history-card">
+          <div class="card-title-row"><h2>Registro de la casa</h2><span id="history-count">0 movimientos</span></div>
+          <div id="history-list" class="history-list"><div class="empty-state"><div class="empty-icon">◴</div><h3>Una historia por empezar.</h3><p>Las confirmaciones, ofertas y ausencias aparecerán aquí.</p></div></div>
+        </article>
+      </section>
+
+      <section id="view-agreements" class="view">
+        <div class="page-heading"><div><p class="eyebrow">EL REPARTO DE LA NOCHE</p><h1>Las reglas de casa.</h1></div><div class="page-date">15 de septiembre de 2026</div></div>
+        <div class="agreements-grid">
+          <article class="rules-card">
+            <p class="eyebrow">ACTIVAS</p><h2>Pocas reglas. Bien claras.</h2>
+            <div class="rules-list">
+              <div class="rule"><strong>2 tickets al empezar.</strong><p>Cada persona tiene dos. El total siempre es ocho y no hay deuda de tickets.</p></div>
+              <div class="rule"><strong>Primero aceptar, después cobrar.</strong><p>El ticket queda reservado y se transfiere al confirmar el lavado. Publicar por sí solo no cambia el turno.</p></div>
+              <div class="rule"><strong>La ausencia intercambia dos noches.</strong><p>Mamá → Papá → Mariano → Santi se convierte en Papá → Mamá → Mariano → Santi. El turno recuperado es obligatorio.</p></div>
+              <div class="rule"><strong>Una excepción no borra otra.</strong><p>No se encadenan ausencias ni se modifica una cobertura ya aceptada. Los turnos vencidos siguen sin confirmar.</p></div>
+            </div>
+            <p class="timezone-text">Zona horaria: America/Argentina/Buenos_Aires. Inicio: 15 de septiembre de 2026. El día cambia a medianoche.</p>
+          </article>
+          <article class="ideas-card">
+            <p class="eyebrow">PARA CONVERSAR ENTRE LOS CUATRO</p><h2>Un poco de juego.</h2><p class="card-subtitle">Estas ideas todavía no están activadas.</p>
+            <div class="rules-list">
+              <div class="rule"><strong>Rachas sin inflación</strong><p>Una insignia por 4 turnos cumplidos a tiempo. El premio es visual; no crea tickets.</p></div>
+              <div class="rule"><strong>Noches pesadas</strong><p>Permitir una oferta de 1 o 2 tickets en asados o fiestas, siempre acordada antes de aceptar.</p></div>
+              <div class="rule"><strong>Olvidos con reparación</strong><p>Registrar el incumplimiento y acordar una tarea de reparación. Sin borrar deudas ni fabricar tickets.</p></div>
+              <div class="rule"><strong>Plato en tu teléfono</strong><p>Podrás abrir esta misma dirección desde el celular e iniciar sesión con tu propia cuenta.</p></div>
+              <div class="rule"><strong>Otras tareas de casa</strong><p>Usar los mismos tickets para tareas acordadas. Siempre paga una persona y cobra otra.</p></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="app-footer"><span>plato · casa de cuatro</span><span>Un turno claro, una cocina lista.</span></footer>
+    </main>
+  </div>
+</body>
+</html>

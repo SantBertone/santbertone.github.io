@@ -1,0 +1,1672 @@
+:root {
+  --bg: #0f1a2d;
+  --sidebar: #1a2942;
+  --surface: #1d2b43;
+  --surface-2: #24395f;
+  --surface-3: #2c4680;
+  --border: #31415d;
+
+  --text: #f4f7ff;
+  --muted: #9db0cf;
+
+  --accent: #4b63e8;
+  --accent-2: #32478d;
+
+  --success: #9ab995;
+  --success-dark: #2e523b;
+
+  --warning: #5b3a2f;
+
+  --mama: #9da9ff;
+  --papa: #8fd0aa;
+  --mariano: #f2b980;
+  --santi: #d59cf2;
+
+  --shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
+   MODO CLARO
+========================================================= */
+
+body.light {
+  --bg: #edf2f9;
+  --sidebar: #dfe7f3;
+
+  --surface: #ffffff;
+  --surface-2: #f5f7fb;
+  --surface-3: #e8eef8;
+
+  --border: #c7d1e0;
+
+  --text: #182238;
+  --muted: #61708a;
+
+  --accent: #4b63e8;
+  --accent-2: #dce5ff;
+
+  --success: #8fb48d;
+  --success-dark: #dcebdc;
+
+  --warning: #f2ddd3;
+
+  --mama: #7386f4;
+  --papa: #56a676;
+  --mariano: #d98d4b;
+  --santi: #b467dc;
+
+  --shadow: 0 10px 24px rgba(40, 55, 85, 0.08);
+
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.login-screen {
+  min-height: 100vh;
+
+  display: grid;
+  place-items: center;
+
+  padding: 24px;
+
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(75, 99, 232, 0.2),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(50, 71, 141, 0.3),
+      transparent 30%
+    ),
+    var(--bg);
+}
+
+.login-card {
+  width: min(460px, 100%);
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+
+  padding: 40px;
+
+  box-shadow: var(--shadow);
+}
+
+.login-logo,
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-box {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 11px;
+
+  display: grid;
+  place-items: center;
+
+  background: linear-gradient(
+    135deg,
+    #536bf4,
+    #3345bd
+  );
+
+  color: white;
+
+  font-weight: 900;
+  font-size: 22px;
+}
+
+.logo-text {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.login-kicker,
+.eyebrow {
+  font-size: 12px;
+
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+
+  font-weight: 800;
+
+  color: #b7c6e6;
+}
+
+.login-card h1 {
+  font-size: 42px;
+
+  margin: 8px 0;
+
+  letter-spacing: -0.04em;
+}
+
+.login-description {
+  color: var(--muted);
+
+  margin-bottom: 28px;
+}
+
+.google-button {
+  width: 100%;
+
+  border: 0;
+  border-radius: 14px;
+
+  padding: 14px 18px;
+
+  background: white;
+  color: #172035;
+
+  font-weight: 800;
+
+  display: flex;
+  gap: 12px;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.google-icon {
+  width: 26px;
+  height: 26px;
+
+  border-radius: 50%;
+
+  border: 1px solid #d0d6e0;
+
+  display: grid;
+  place-items: center;
+
+  font-weight: 900;
+}
+
+.login-error {
+  color: #ffb6a5;
+
+  min-height: 24px;
+
+  margin-top: 14px;
+}
+
+/* =========================================================
+   ESTRUCTURA
+========================================================= */
+
+.app-shell {
+  min-height: 100vh;
+
+  display: grid;
+
+  grid-template-columns: 198px 1fr;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+  position: sticky;
+
+  top: 0;
+
+  height: 100vh;
+
+  padding: 28px 18px 20px;
+
+  background: var(--sidebar);
+
+  border-right: 1px solid var(--border);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand {
+  padding: 10px 8px 46px;
+}
+
+.sidebar-section-title {
+  display: flex;
+  gap: 10px;
+
+  align-items: center;
+
+  color: #c4d0e9;
+
+  font-weight: 800;
+  font-size: 12px;
+
+  letter-spacing: 0.1em;
+
+  margin: 0 8px 16px;
+}
+
+.sidebar-nav {
+  display: grid;
+  gap: 8px;
+}
+
+.nav-item {
+  position: relative;
+
+  border: 0;
+
+  background: transparent;
+
+  min-height: 46px;
+
+  border-radius: 10px;
+
+  padding: 0 12px;
+
+  display: grid;
+
+  grid-template-columns: 24px 1fr auto;
+
+  gap: 8px;
+
+  align-items: center;
+
+  text-align: left;
+
+  font-weight: 700;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-item.active {
+  background: #31477d;
+  color: white;
+}
+
+.nav-badge {
+  min-width: 20px;
+  height: 20px;
+
+  padding: 0 6px;
+
+  border-radius: 7px;
+
+  display: grid;
+  place-items: center;
+
+  background: #445b98;
+
+  font-size: 12px;
+}
+
+.sidebar-bottom {
+  color: var(--muted);
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.sidebar-bottom h3 {
+  color: var(--text);
+
+  margin: 12px 8px 4px;
+}
+
+.sidebar-bottom p,
+.rotation {
+  margin: 0 8px 16px;
+}
+
+.rotation {
+  display: grid;
+
+  color: var(--text);
+
+  gap: 3px;
+}
+
+.sidebar-moon {
+  margin: 0 8px;
+
+  font-size: 26px;
+}
+
+.sidebar-footer {
+  margin-top: 28px;
+
+  padding: 18px 8px 0;
+
+  border-top: 1px solid var(--border);
+
+  display: grid;
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main-content {
+  min-width: 0;
+}
+
+.topbar {
+  height: 76px;
+
+  border-bottom: 1px solid var(--border);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 0 26px;
+}
+
+.breadcrumb {
+  display: flex;
+
+  gap: 14px;
+
+  color: #c1cee8;
+
+  font-size: 14px;
+}
+
+.topbar-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+}
+
+.secondary-button {
+  border: 1px solid var(--border);
+
+  background: transparent;
+
+  border-radius: 10px;
+
+  padding: 10px 14px;
+
+  font-weight: 700;
+}
+
+.logout-button,
+.text-button {
+  border: 0;
+
+  background: transparent;
+
+  text-decoration: underline;
+
+  font-weight: 700;
+}
+
+.account-summary {
+  font-size: 14px;
+}
+
+/* =========================================================
+   VISTAS
+========================================================= */
+
+.view {
+  display: none;
+
+  padding: 28px 26px 0;
+}
+
+.view.active-view {
+  display: block;
+}
+
+.page-heading {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-end;
+
+  gap: 24px;
+
+  margin-bottom: 26px;
+}
+
+.page-heading h1 {
+  margin: 4px 0 0;
+
+  font-size: 34px;
+
+  letter-spacing: -0.04em;
+}
+
+.page-date {
+  color: #b9c9e7;
+
+  font-size: 13px;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   BANNER
+========================================================= */
+
+.status-banner {
+  margin-bottom: 20px;
+
+  border: 1px solid #84614e;
+
+  background: var(--warning);
+
+  color: #ffd5bd;
+
+  border-radius: 11px;
+
+  padding: 13px 16px;
+}
+
+/* =========================================================
+   HOY
+========================================================= */
+
+.today-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.4fr)
+    minmax(300px, 0.85fr);
+
+  gap: 16px;
+}
+
+.turn-card,
+.tickets-card,
+.week-card,
+.calendar-card,
+.history-card,
+.rules-card,
+.ideas-card,
+.offers-card {
+  border: 1px solid var(--border);
+
+  border-radius: 16px;
+
+  background: var(--surface);
+
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.02) inset;
+}
+
+/* =========================================================
+   TURNO PRINCIPAL
+========================================================= */
+
+.turn-card {
+  position: relative;
+
+  min-height: 370px;
+
+  padding: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #2f438a,
+      #273a78
+    );
+
+  overflow: hidden;
+}
+
+.turn-card-top {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+}
+
+.light {
+  color: #d6dfff;
+}
+
+.status-pill {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  border-radius: 999px;
+
+  padding: 8px 12px;
+
+  font-size: 12px;
+
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.turn-card-content {
+  margin-top: 36px;
+
+  max-width: 58%;
+}
+
+.turn-card-content p {
+  color: #cbd6ff;
+
+  margin: 0 0 6px;
+}
+
+.turn-card-content h2 {
+  font-size: 42px;
+
+  letter-spacing: -0.04em;
+
+  margin: 0 0 12px;
+}
+
+.turn-type {
+  display: inline-block;
+
+  padding: 7px 10px;
+
+  border-radius: 6px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.turn-avatar {
+  position: absolute;
+
+  right: 38px;
+  top: 82px;
+
+  width: 76px;
+  height: 90px;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  border-radius: 26px;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 28px;
+
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.turn-card-bottom {
+  position: absolute;
+
+  left: 24px;
+  right: 24px;
+  bottom: 20px;
+}
+
+.turn-card-bottom p {
+  color: #cbd6ff;
+
+  font-size: 13px;
+}
+
+.primary-success-button {
+  border: 0;
+
+  background: var(--success);
+
+  color: #243a2c;
+
+  padding: 12px 16px;
+
+  border-radius: 10px;
+
+  font-weight: 800;
+}
+
+.primary-success-button:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   TICKETS
+========================================================= */
+
+.tickets-card {
+  padding: 24px;
+}
+
+.card-title-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  align-items: flex-start;
+}
+
+.card-title-row h2,
+.calendar-card h2,
+.history-card h2,
+.rules-card h2,
+.ideas-card h2,
+.offers-card h2 {
+  margin: 0;
+
+  font-size: 19px;
+}
+
+.card-subtitle {
+  margin: 5px 0 18px;
+
+  color: var(--muted);
+
+  font-size: 13px;
+}
+
+.tickets-list {
+  display: grid;
+
+  gap: 12px;
+}
+
+.ticket-member {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+}
+
+.person-info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.person-info small {
+  display: block;
+
+  color: var(--muted);
+
+  margin-top: 2px;
+}
+
+.person-avatar {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 9px;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 13px;
+
+  font-weight: 900;
+
+  color: #20304b;
+}
+
+.person-mama {
+  background: #c8d0ff;
+}
+
+.person-papa {
+  background: #d3efdc;
+}
+
+.person-mariano {
+  background: #f7dec7;
+}
+
+.person-santi {
+  background: #ead2fb;
+}
+
+.ticket-number {
+  display: flex;
+
+  gap: 8px;
+
+  align-items: center;
+
+  font-size: 19px;
+
+  font-weight: 900;
+}
+
+.tickets-total {
+  margin-top: 20px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid var(--border);
+
+  display: flex;
+
+  justify-content: space-between;
+
+  color: #c3d0e9;
+
+  font-size: 13px;
+}
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.quick-actions {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 16px;
+
+  margin-top: 16px;
+}
+
+.action-card {
+  width: 100%;
+
+  min-height: 84px;
+
+  border: 1px solid var(--border);
+
+  background: var(--surface);
+
+  border-radius: 12px;
+
+  padding: 16px;
+
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  text-align: left;
+}
+
+.action-card div {
+  display: grid;
+
+  grid-template-columns: 28px 1fr;
+
+  column-gap: 10px;
+}
+
+.action-card small {
+  grid-column: 2;
+
+  color: var(--muted);
+
+  margin-top: 4px;
+}
+
+.action-card:hover {
+  background: #23334e;
+}
+
+.action-card:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   TURNOS DISPONIBLES
+========================================================= */
+
+.offers-card {
+  margin-top: 16px;
+
+  padding: 20px;
+}
+
+.offers-list {
+  display: grid;
+
+  gap: 10px;
+
+  margin-top: 14px;
+}
+
+.offer-row {
+  display: grid;
+
+  grid-template-columns: 1fr auto;
+
+  gap: 16px;
+
+  align-items: center;
+
+  border: 1px solid var(--border);
+
+  border-radius: 11px;
+
+  padding: 14px;
+}
+
+.offer-main {
+  display: grid;
+
+  gap: 4px;
+}
+
+.offer-main small,
+.empty-offers {
+  color: var(--muted);
+}
+
+.accept-offer-button {
+  border: 1px solid #5970d7;
+
+  background: #31477d;
+
+  border-radius: 9px;
+
+  padding: 9px 12px;
+
+  font-weight: 800;
+}
+
+.accept-offer-button:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   SEMANA
+========================================================= */
+
+.week-card {
+  margin-top: 16px;
+
+  padding: 20px;
+}
+
+.week-strip {
+  margin-top: 16px;
+
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  gap: 8px;
+}
+
+.week-day {
+  border: 1px solid var(--border);
+
+  border-radius: 10px;
+
+  padding: 12px;
+
+  min-height: 88px;
+
+  display: grid;
+
+  gap: 6px;
+}
+
+.week-day strong {
+  font-size: 14px;
+}
+
+.week-day small {
+  color: var(--muted);
+}
+
+.member-dot {
+  display: inline-block;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  margin-right: 6px;
+}
+
+.dot-mama {
+  background: var(--mama);
+}
+
+.dot-papa {
+  background: var(--papa);
+}
+
+.dot-mariano {
+  background: var(--mariano);
+}
+
+.dot-santi {
+  background: var(--santi);
+}
+
+/* =========================================================
+   CALENDARIO
+========================================================= */
+
+.calendar-card {
+  padding: 24px;
+}
+
+.calendar-header {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 20px;
+}
+
+.calendar-controls {
+  display: flex;
+
+  gap: 8px;
+}
+
+.calendar-controls button {
+  border: 1px solid var(--border);
+
+  background: transparent;
+
+  border-radius: 9px;
+
+  padding: 8px 11px;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  gap: 4px;
+}
+
+.calendar-weekdays span {
+  text-align: center;
+
+  padding: 8px;
+
+  color: #b6c5df;
+
+  font-size: 12px;
+}
+
+.calendar-cell {
+  min-height: 100px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  padding: 9px;
+
+  color: var(--muted);
+
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.calendar-cell.active-date {
+  color: var(--text);
+}
+
+.calendar-cell.today {
+  outline: 1px solid #8298ff;
+
+  background: #2b3f79;
+}
+
+.calendar-cell .day-number {
+  font-weight: 900;
+
+  margin-bottom: 18px;
+}
+
+.calendar-cell .member-label {
+  font-weight: 800;
+
+  font-size: 12px;
+}
+
+.calendar-cell .turn-label {
+  margin-top: 6px;
+
+  font-size: 11px;
+
+  color: #b7c5de;
+}
+
+/* =========================================================
+   HISTORIAL
+========================================================= */
+
+.history-card {
+  padding: 24px;
+
+  min-height: 290px;
+}
+
+.history-list {
+  margin-top: 16px;
+}
+
+.empty-state {
+  min-height: 210px;
+
+  display: grid;
+
+  place-items: center;
+  align-content: center;
+
+  text-align: center;
+
+  color: var(--muted);
+}
+
+.empty-state h3 {
+  color: var(--text);
+
+  margin: 8px 0;
+}
+
+.empty-icon {
+  font-size: 34px;
+}
+
+.history-entry {
+  border-top: 1px solid var(--border);
+
+  padding: 14px 0;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.history-entry:first-child {
+  border-top: 0;
+}
+
+.history-entry time {
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   ACUERDOS
+========================================================= */
+
+.agreements-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 16px;
+}
+
+.rules-card,
+.ideas-card {
+  padding: 24px;
+}
+
+.rules-list {
+  display: grid;
+
+  gap: 22px;
+
+  margin-top: 22px;
+}
+
+.rule strong {
+  display: block;
+
+  margin-bottom: 5px;
+}
+
+.rule p {
+  margin: 0;
+
+  color: #b9c9e4;
+
+  line-height: 1.55;
+
+  font-size: 14px;
+}
+
+.timezone-text {
+  margin-top: 26px;
+
+  color: #b9c9e4;
+
+  font-size: 13px;
+
+  line-height: 1.55;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.app-footer {
+  margin: 28px 26px 18px;
+
+  border-top: 1px solid var(--border);
+
+  padding: 18px 0;
+
+  color: #9eacc8;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   MODO CLARO — CORRECCIONES DE CONTRASTE
+========================================================= */
+
+body.light .page-heading h1,
+body.light .card-title-row h2,
+body.light .calendar-card h2,
+body.light .history-card h2,
+body.light .rules-card h2,
+body.light .ideas-card h2,
+body.light .offers-card h2,
+body.light .sidebar-bottom h3,
+body.light .rule strong,
+body.light .empty-state h3,
+body.light .person-info strong,
+body.light .ticket-number,
+body.light .account-summary,
+body.light .breadcrumb strong,
+body.light .week-day strong {
+  color: #172033;
+}
+
+body.light .card-subtitle,
+body.light .person-info small,
+body.light .page-date,
+body.light .rule p,
+body.light .timezone-text,
+body.light .sidebar-bottom,
+body.light .empty-state,
+body.light .calendar-cell .turn-label,
+body.light .tickets-total,
+body.light .week-day small,
+body.light .offer-main small,
+body.light .empty-offers,
+body.light .app-footer {
+  color: #61708a;
+}
+
+body.light .eyebrow,
+body.light .login-kicker,
+body.light .sidebar-section-title {
+  color: #6075a6;
+}
+
+/* Sidebar claro */
+
+body.light .sidebar {
+  background: #dfe7f3;
+
+  border-right-color: #c7d1e2;
+}
+
+body.light .logo-text {
+  color: #182238;
+}
+
+body.light .nav-item {
+  color: #24324d;
+}
+
+body.light .nav-item.active {
+  background: #405b99;
+
+  color: white;
+}
+
+body.light .nav-item:hover {
+  background: rgba(64, 91, 153, 0.1);
+}
+
+body.light .sidebar-bottom h3,
+body.light .rotation {
+  color: #182238;
+}
+
+body.light .sidebar-footer {
+  color: #586984;
+}
+
+/* Topbar claro */
+
+body.light .topbar {
+  background: #f8faff;
+
+  border-bottom-color: #cbd5e5;
+}
+
+body.light .breadcrumb {
+  color: #667795;
+}
+
+body.light .secondary-button {
+  color: #2b3954;
+
+  border-color: #bfcadd;
+
+  background: #ffffff;
+}
+
+body.light .logout-button,
+body.light .text-button {
+  color: #324a80;
+}
+
+/* Tarjetas claras */
+
+body.light .tickets-card,
+body.light .week-card,
+body.light .calendar-card,
+body.light .history-card,
+body.light .rules-card,
+body.light .ideas-card,
+body.light .offers-card,
+body.light .action-card {
+  background: #ffffff;
+
+  border-color: #c8d2e3;
+}
+
+/* Turno principal en modo claro */
+
+body.light .turn-card {
+  background:
+    linear-gradient(
+      145deg,
+      #37509d,
+      #30488e
+    );
+
+  color: white;
+}
+
+body.light .turn-card-content p,
+body.light .turn-card-bottom p,
+body.light .turn-card .eyebrow {
+  color: #dce5ff;
+}
+
+body.light .turn-card-content h2 {
+  color: white;
+}
+
+body.light .turn-type {
+  color: white;
+
+  background: rgba(255, 255, 255, 0.12);
+}
+
+body.light .status-pill {
+  color: white;
+}
+
+/* Banner claro */
+
+body.light .status-banner {
+  background: #f3ddd2;
+
+  border-color: #d6a38d;
+
+  color: #6b3426;
+}
+
+/* Tickets claros */
+
+body.light .tickets-total {
+  border-top-color: #d0d8e6;
+
+  color: #546580;
+}
+
+/* Acciones claras */
+
+body.light .action-card {
+  color: #182238;
+}
+
+body.light .action-card:hover {
+  background: #f2f5fb;
+}
+
+body.light .action-card small {
+  color: #6b7890;
+}
+
+body.light .action-card:disabled,
+body.light .primary-success-button:disabled {
+  opacity: 0.55;
+}
+
+/* Turnos disponibles claros */
+
+body.light .offer-row {
+  background: #ffffff;
+
+  border-color: #ccd5e4;
+}
+
+body.light .accept-offer-button {
+  background: #405b99;
+
+  color: white;
+
+  border-color: #405b99;
+}
+
+/* Semana clara */
+
+body.light .week-day {
+  background: #ffffff;
+
+  border-color: #cad4e3;
+
+  color: #182238;
+}
+
+/* Calendario claro */
+
+body.light .calendar-cell {
+  background: #ffffff;
+
+  border-color: #c9d3e4;
+
+  color: #566680;
+}
+
+body.light .calendar-cell.active-date {
+  color: #172033;
+}
+
+body.light .calendar-cell.today {
+  background: #405b99;
+
+  color: white;
+
+  outline-color: #7189d8;
+}
+
+body.light .calendar-cell.today .member-label,
+body.light .calendar-cell.today .turn-label,
+body.light .calendar-cell.today .day-number {
+  color: white;
+}
+
+body.light .calendar-weekdays span {
+  color: #647594;
+}
+
+body.light .calendar-controls button {
+  color: #30405c;
+
+  background: white;
+
+  border-color: #bcc8db;
+}
+
+/* Historial claro */
+
+body.light .history-entry {
+  border-top-color: #d2dae7;
+}
+
+body.light .history-entry strong {
+  color: #172033;
+}
+
+/* Acuerdos claros */
+
+body.light .rules-card,
+body.light .ideas-card {
+  color: #172033;
+}
+
+/* Footer claro */
+
+body.light .app-footer {
+  border-top-color: #c8d2e3;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 980px) {
+
+  .app-shell {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .logo-text,
+  .sidebar-section-title span:last-child,
+  .nav-item span:nth-child(2),
+  .sidebar-bottom {
+    display: none;
+  }
+
+  .brand {
+    justify-content: center;
+  }
+
+  .nav-item {
+    grid-template-columns: 1fr;
+
+    place-items: center;
+  }
+
+  .nav-badge {
+    position: absolute;
+
+    transform: translate(18px, -14px);
+  }
+
+  .today-grid,
+  .agreements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .week-strip {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+}
+
+@media (max-width: 680px) {
+
+  .app-shell {
+    display: block;
+  }
+
+  .sidebar {
+    position: static;
+
+    width: 100%;
+    height: auto;
+
+    flex-direction: row;
+
+    padding: 10px;
+
+    overflow-x: auto;
+  }
+
+  .brand,
+  .sidebar-section-title,
+  .sidebar-bottom {
+    display: none;
+  }
+
+  .sidebar-nav {
+    display: flex;
+
+    width: 100%;
+  }
+
+  .nav-item {
+    min-width: max-content;
+
+    grid-template-columns: 20px 1fr;
+  }
+
+  .nav-item span:nth-child(2) {
+    display: inline;
+  }
+
+  .nav-badge {
+    position: static;
+
+    transform: none;
+  }
+
+  .topbar {
+    height: auto;
+
+    padding: 12px 16px;
+
+    align-items: flex-start;
+  }
+
+  .topbar-actions {
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+    justify-content: flex-end;
+  }
+
+  .secondary-button {
+    display: none;
+  }
+
+  .view {
+    padding: 20px 14px 0;
+  }
+
+  .page-heading {
+    align-items: flex-start;
+  }
+
+  .page-date {
+    display: none;
+  }
+
+  .today-grid,
+  .quick-actions,
+  .agreements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .turn-card {
+    min-height: 390px;
+  }
+
+  .turn-card-content {
+    max-width: 70%;
+  }
+
+  .week-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calendar-cell {
+    min-height: 82px;
+
+    padding: 6px;
+  }
+
+  .calendar-cell .member-label,
+  .calendar-cell .turn-label {
+    font-size: 10px;
+  }
+
+  .app-footer {
+    margin-inline: 14px;
+  }
+
+}
