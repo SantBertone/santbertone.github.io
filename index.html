@@ -4,9 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plato · Turnos en casa</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260926-compras-1" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js" defer></script>
+  <script src="app.js?v=20260926-compras-1" defer></script>
+  <script src="shopping.js?v=20260926-compras-1" defer></script>
 </head>
 <body>
   <section id="login-screen" class="login-screen hidden">
@@ -30,6 +31,7 @@
         <nav class="sidebar-nav">
           <button class="nav-item active" data-view="today"><span class="nav-icon">⌘</span><span>Hoy</span><span class="nav-badge">4</span></button>
           <button class="nav-item" data-view="calendar"><span class="nav-icon">▦</span><span>Calendario</span></button>
+          <button class="nav-item" data-view="shopping"><span class="nav-icon">🛒</span><span>Compras</span></button>
           <button class="nav-item" data-view="history"><span class="nav-icon">◴</span><span>Historial</span></button>
           <button class="nav-item" data-view="agreements"><span class="nav-icon">↕</span><span>Acuerdos</span></button>
         </nav>
@@ -128,6 +130,25 @@
           <p id="calendar-admin-message" role="status" aria-live="polite"></p>
           <div class="calendar-weekdays"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
           <div id="calendar-grid" class="calendar-grid"></div>
+        </article>
+      </section>
+
+      <section id="view-shopping" class="view">
+        <div class="page-heading"><div><p class="eyebrow">LO QUE HACE FALTA EN CASA</p><h1>La próxima compra.</h1><p class="card-subtitle">Una lista para los cuatro. Los cambios de la familia aparecen automáticamente.</p></div></div>
+        <article class="shopping-card">
+          <form id="shopping-form">
+            <fieldset id="shopping-fields" class="shopping-fields" disabled>
+              <legend class="shopping-legend">Agregar a la lista</legend>
+              <label class="shopping-name-label" for="shopping-name">Producto<input id="shopping-name" name="product" type="text" maxlength="120" placeholder="Ej.: leche, arroz, manzanas" required autocomplete="off" /></label>
+              <label for="shopping-quantity">Cantidad<input id="shopping-quantity" name="quantity" type="text" maxlength="60" placeholder="Ej.: 2 litros, 1 kg" autocomplete="off" /></label>
+              <button type="submit" class="primary-success-button">＋ Agregar</button>
+            </fieldset>
+          </form>
+          <div class="shopping-toolbar"><span id="shopping-count">Cargando lista…</span><button id="shopping-refresh" type="button" class="shopping-outline">Actualizar</button></div>
+          <p id="shopping-message" class="shopping-message" role="status" aria-live="polite"></p>
+          <h2 class="shopping-section-title">Por comprar</h2>
+          <ul id="shopping-pending" class="shopping-list" aria-label="Productos por comprar"></ul>
+          <details id="shopping-done-section" class="shopping-done" hidden><summary id="shopping-done-title">Comprados</summary><ul id="shopping-done" class="shopping-list" aria-label="Productos comprados"></ul></details>
         </article>
       </section>
 

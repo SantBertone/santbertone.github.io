@@ -25,6 +25,42 @@
   --shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
 }
 
+.shopping-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 24px; }
+.shopping-fields { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; align-items: end; gap: 14px; }
+.shopping-legend { font-size: 20px; font-weight: 800; margin-bottom: 18px; }
+.shopping-fields label { display: grid; gap: 8px; flex: 1 1 160px; min-width: 0; }
+.shopping-fields .shopping-name-label { flex: 2 1 240px; }
+.shopping-fields input { width: 100%; min-width: 0; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); }
+.shopping-fields input::placeholder { color: var(--muted); }
+.shopping-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 24px 0 0; color: var(--muted); }
+.shopping-outline, .shopping-remove { font: inherit; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; color: var(--text); background: var(--surface-2); }
+.shopping-message { min-height: 20px; color: var(--muted); margin: 12px 0 20px; }
+.shopping-message.shopping-error { color: #ffbca9; }
+body.light .shopping-message.shopping-error { color: #9c3127; }
+.shopping-section-title { font-size: 18px; margin: 0 0 10px; }
+.shopping-list { padding: 0; margin: 0; list-style: none; }
+.shopping-row { display: flex; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+.shopping-check { flex: 1; min-width: 0; display: flex; align-items: center; gap: 14px; cursor: pointer; padding: 4px 0; }
+.shopping-check input { width: 23px; height: 23px; flex-shrink: 0; accent-color: var(--success-dark); }
+.shopping-check span { min-width: 0; overflow-wrap: anywhere; }
+.shopping-check strong, .shopping-check small { display: block; }
+.shopping-check small { color: var(--muted); margin-top: 5px; }
+.shopping-row.is-purchased strong { text-decoration: line-through; color: var(--muted); }
+.shopping-remove { flex-shrink: 0; }
+.shopping-empty { color: var(--muted); padding: 28px 0; text-align: center; }
+.shopping-done { margin-top: 24px; }
+.shopping-done summary { color: var(--muted); cursor: pointer; padding: 12px 0; }
+#view-shopping :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+#view-shopping button:disabled, #view-shopping input:disabled { opacity: .55; cursor: wait; }
+@media (max-width: 600px) {
+  .shopping-card { padding: 18px; }
+  .shopping-fields .shopping-name-label { flex-basis: 100%; }
+  .shopping-fields > button { width: 100%; }
+  .shopping-row { gap: 8px; }
+  .shopping-check { gap: 10px; }
+  .shopping-remove { padding: 10px 8px; }
+}
+
 #ticket-admin { margin-top: 20px; }
 .ticket-admin-fields { border: 0; padding: 0; margin: 18px 0 0; display: flex; flex-wrap: wrap; align-items: end; gap: 14px; }
 .ticket-admin-fields label { display: grid; gap: 8px; flex: 1 1 180px; }

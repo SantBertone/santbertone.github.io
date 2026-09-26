@@ -78,12 +78,16 @@ function setView(name) {
     today: "Hoy",
     calendar: "Calendario",
     history: "Historial",
-    agreements: "Acuerdos"
+    agreements: "Acuerdos",
+    shopping: "Compras"
   };
   el("breadcrumb-current").textContent = labels[name] || "Hoy";
+  if (name === "shopping") window.PlatoShopping?.open();
+  else window.PlatoShopping?.close();
 }
 
 function showLogin(message = "") {
+  window.PlatoShopping?.reset();
   ticketAdmin = false;
   el("ticket-admin").classList.add("hidden");
   el("app").classList.add("hidden");
